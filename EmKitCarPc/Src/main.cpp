@@ -4,17 +4,20 @@
  *  Created on: Feb 25, 2017
  *      Author: banz
  */
-
-#include <StmHAL.h>
+#include "Hal.h"
 
 int main(void)
 {
-	StmHalInit();
+	Hal::Init();
+
+	Hal::LedBlue(true);
+	Hal::LedRed(true);
 
 	while (true)
 	{
-		StmHalTick();
+		Hal::Tick();
 	}
+
 }
 
 
