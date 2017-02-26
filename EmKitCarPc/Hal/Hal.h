@@ -8,6 +8,8 @@
 #ifndef HAL_H_
 #define HAL_H_
 
+#include <stdint.h>
+
 class Hal {
 public:
 	static void Init();
@@ -17,6 +19,14 @@ public:
 	static void LedRed(bool);
 	static bool LedBlue();
 	static void LedBlue(bool);
+
+	static bool IsTurnedOut(uint8_t outNum);
+	static void TurnOut(uint8_t outNum, bool value);
+
+	static bool IsTurnedIn(uint8_t inpNum);
+
+	static bool IsOptoTurnedIn(uint8_t inpNum);
+
 };
 
 #endif /* HAL_H_ */

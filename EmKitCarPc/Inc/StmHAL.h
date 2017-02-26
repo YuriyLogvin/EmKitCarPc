@@ -94,10 +94,10 @@
 #define Rs485Tx_GPIO_Port GPIOC
 #define Rs485Rx_Pin GPIO_PIN_2
 #define Rs485Rx_GPIO_Port GPIOD
-#define Out5_Pin GPIO_PIN_3
-#define Out5_GPIO_Port GPIOB
-#define Out6_Pin GPIO_PIN_4
-#define Out6_GPIO_Port GPIOB
+#define GPIO_Out5_Pin GPIO_PIN_3
+#define GPIO_Out5_GPIO_Port GPIOB
+#define GPIO_Out6_Pin GPIO_PIN_4
+#define GPIO_Out6_GPIO_Port GPIOB
 #define CanS_Pin GPIO_PIN_5
 #define CanS_GPIO_Port GPIOB
 #define HlkTx_Pin GPIO_PIN_6
