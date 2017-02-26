@@ -40,7 +40,7 @@
  extern "C" {
 #endif
 
-#include <StmHAL.h>
+#include "StmHAL.h"
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
@@ -55,7 +55,7 @@
 /*#define HAL_CORTEX_MODULE_ENABLED   */
 /*#define HAL_CRC_MODULE_ENABLED   */
 /*#define HAL_DAC_MODULE_ENABLED   */
-/*#define HAL_DMA_MODULE_ENABLED   */
+#define HAL_DMA_MODULE_ENABLED
 /*#define HAL_ETH_MODULE_ENABLED   */
 /*#define HAL_FLASH_MODULE_ENABLED   */
 #define HAL_GPIO_MODULE_ENABLED

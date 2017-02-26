@@ -9,6 +9,7 @@
 #define HAL_H_
 
 #include <stdint.h>
+#include "Stm32UsartDma.h"
 
 class Hal {
 public:
@@ -26,6 +27,9 @@ public:
 	static bool IsTurnedIn(uint8_t inpNum);
 
 	static bool IsOptoTurnedIn(uint8_t inpNum);
+
+	static Stm32UsartDma UsartWiFi;
+	static Stm32UsartDma UsartBms;
 
 };
 

@@ -7,6 +7,20 @@
 
 #include "Hal.h"
 #include <StmHAL.h>
+#include "stm32f1xx_hal.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+extern "C"
+{
+UART_HandleTypeDef huart4;
+UART_HandleTypeDef huart5;
+UART_HandleTypeDef huart1;
+}
+
+Stm32UsartDma Hal::UsartWiFi(&huart1, 0x200, 0x100);
+Stm32UsartDma Hal::UsartBms(&huart4, 0x200, 0x100);
 
 void Hal::Init()
 {
@@ -87,12 +101,12 @@ void Hal::TurnOut(uint8_t outNum, bool value)
 	}
 }
 
-bool IsTurnedIn(uint8_t inpNum)
+bool Hal::IsTurnedIn(uint8_t inpNum)
 {
 	return false;
 }
 
-bool IsOptoTurnedIn(uint8_t inpNum)
+bool Hal::IsOptoTurnedIn(uint8_t inpNum)
 {
 	switch (inpNum)
 	{
@@ -103,7 +117,4 @@ bool IsOptoTurnedIn(uint8_t inpNum)
 	}
 	return false;
 }
-
-
-
 
