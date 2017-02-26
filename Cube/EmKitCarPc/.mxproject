@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=E:/Works/EmKit/Automotive/AutomotiveDevices/EmKit.A1109 - CarPC/Source/Cube/EmKitCarPc/Inc
+HeaderPath=E:/Works/GitHub/EmKitCarPc/Cube/EmKitCarPc/Inc
 HeaderFiles=usb_host.h;usbh_conf.h;stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;
-SourcePath=E:/Works/EmKit/Automotive/AutomotiveDevices/EmKit.A1109 - CarPC/Source/Cube/EmKitCarPc/Src
+SourcePath=E:/Works/GitHub/EmKitCarPc/Cube/EmKitCarPc/Src
 SourceFiles=usb_host.h;usbh_conf.h;stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;usb_host.c;usbh_conf.c;stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]
