@@ -56,6 +56,7 @@
 								<option id="gnu.cpp.compiler.option.debugging.level.406444431" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1468137818" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../Inc"/>
+									<listOptionValue builtIn="false" value="../Kernel"/>
 									<listOptionValue builtIn="false" value="../Hal"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F1xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy"/>
@@ -102,26 +103,11 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<folderInfo id="fr.ac6.managedbuild.config.gnu.cross.exe.debug.1304864158.1081493486" name="/" resourcePath="Hal">
-						<toolChain id="fr.ac6.managedbuild.toolchain.gnu.cross.exe.debug.852275647" name="Ac6 STM32 MCU GCC" superClass="fr.ac6.managedbuild.toolchain.gnu.cross.exe.debug" unusedChildren="">
-							<option id="fr.ac6.managedbuild.option.gnu.cross.prefix.1726649597.1349725439" name="Prefix" superClass="fr.ac6.managedbuild.option.gnu.cross.prefix.1726649597"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.mcu.1102317288.760642523" name="Mcu" superClass="fr.ac6.managedbuild.option.gnu.cross.mcu.1102317288"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.board.1217012967.1183674428" name="Board" superClass="fr.ac6.managedbuild.option.gnu.cross.board.1217012967"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.instructionSet.1729975833.687297429" name="Instruction Set" superClass="fr.ac6.managedbuild.option.gnu.cross.instructionSet.1729975833"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.fpu.629656197.147033013" name="Floating point hardware" superClass="fr.ac6.managedbuild.option.gnu.cross.fpu.629656197"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.floatabi.2105119486.1566072473" name="Floating-point ABI" superClass="fr.ac6.managedbuild.option.gnu.cross.floatabi.2105119486"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.919067115" name="MCU GCC Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.721483098"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.1687664171" name="MCU G++ Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.1939654402"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.linker.1362191022" name="MCU GCC Linker" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker.1262788578"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.cpp.linker.1747502627" name="MCU G++ Linker" superClass="fr.ac6.managedbuild.tool.gnu.cross.cpp.linker.1447325858"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.archiver.1898010122" name="MCU GCC Archiver" superClass="fr.ac6.managedbuild.tool.gnu.archiver.1917832874"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.assembler.1639267838" name="MCU GCC Assembler" superClass="fr.ac6.managedbuild.tool.gnu.cross.assembler.2145357832"/>
-						</toolChain>
-					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Hal"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Kernel"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
@@ -185,6 +171,7 @@
 								<option id="gnu.cpp.compiler.option.debugging.level.406444431" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.2094083683" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../Inc"/>
+									<listOptionValue builtIn="false" value="../Kernel"/>
 									<listOptionValue builtIn="false" value="../Hal"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F1xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy"/>
@@ -230,26 +217,11 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<folderInfo id="fr.ac6.managedbuild.config.gnu.cross.exe.release.1635450174.643081899" name="/" resourcePath="Hal">
-						<toolChain id="fr.ac6.managedbuild.toolchain.gnu.cross.exe.release.1492572613" name="Ac6 STM32 MCU GCC" superClass="fr.ac6.managedbuild.toolchain.gnu.cross.exe.release" unusedChildren="">
-							<option id="fr.ac6.managedbuild.option.gnu.cross.prefix.1726649597.658458015" name="Prefix" superClass="fr.ac6.managedbuild.option.gnu.cross.prefix.1726649597"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.mcu.1102317288.771639476" name="Mcu" superClass="fr.ac6.managedbuild.option.gnu.cross.mcu.1102317288"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.board.1217012967.62300730" name="Board" superClass="fr.ac6.managedbuild.option.gnu.cross.board.1217012967"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.instructionSet.1729975833.779132740" name="Instruction Set" superClass="fr.ac6.managedbuild.option.gnu.cross.instructionSet.1729975833"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.fpu.629656197.1508766316" name="Floating point hardware" superClass="fr.ac6.managedbuild.option.gnu.cross.fpu.629656197"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.floatabi.2105119486.834301559" name="Floating-point ABI" superClass="fr.ac6.managedbuild.option.gnu.cross.floatabi.2105119486"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.488533304" name="MCU GCC Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.721483098"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.608630641" name="MCU G++ Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.1939654402"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.linker.707840961" name="MCU GCC Linker" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker.1262788578"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.cpp.linker.1718240773" name="MCU G++ Linker" superClass="fr.ac6.managedbuild.tool.gnu.cross.cpp.linker.1447325858"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.archiver.1840364784" name="MCU GCC Archiver" superClass="fr.ac6.managedbuild.tool.gnu.archiver.1917832874"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.assembler.1780862472" name="MCU GCC Assembler" superClass="fr.ac6.managedbuild.tool.gnu.cross.assembler.2145357832"/>
-						</toolChain>
-					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Hal"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Kernel"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>

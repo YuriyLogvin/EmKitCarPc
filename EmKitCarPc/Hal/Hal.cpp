@@ -17,10 +17,35 @@ extern "C"
 UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart1;
+SPI_HandleTypeDef hspi2;
+uint32_t HAL_GetTick(void);
+void HAL_IncTick(void);
 }
 
 Stm32UsartDma Hal::UsartWiFi(&huart1, 0x200, 0x100);
 Stm32UsartDma Hal::UsartBms(&huart4, 0x200, 0x100);
+EepromM95160 Hal::Eeprom(&hspi2, SPI2_CS_MEM_GPIO_Port, SPI2_CS_MEM_Pin, SPI2_WP_GPIO_Port, SPI2_WP_Pin);
+static uint32_t _HalTicker;
+
+static uint32_t _uwTick;
+static uint8_t _uwTickSub;
+
+void HAL_IncTick(void)
+{
+	_uwTickSub++;
+	if (_uwTickSub > 9)
+	{
+		_uwTick++;
+		_uwTickSub = 0;
+	}
+
+	_HalTicker++;
+}
+
+uint32_t HAL_GetTick(void)
+{
+	return _uwTick;
+}
 
 void Hal::Init()
 {
@@ -29,10 +54,7 @@ void Hal::Init()
 
 void Hal::Tick()
 {
-	while (true)
-	{
-		StmHalTick();
-	}
+	StmHalTick();
 }
 
 bool Hal::LedRed()
@@ -118,3 +140,102 @@ bool Hal::IsOptoTurnedIn(uint8_t inpNum)
 	return false;
 }
 
+/* ¬се параметры хран€тс€ в Eeprom начина€ с нулевого адреса
+ *  аждый параметр занимает 64 бита, независимо от реального размера
+ * */
+int8_t Hal::ReadParameterFromEeprom64(EepromParameters pName, int64_t& val)
+{
+	uint16_t addr = pName * 8;
+	return Eeprom.ReadMem(addr, (uint8_t*)&val, sizeof(val));
+}
+
+int8_t Hal::ReadParameterFromEeprom32(EepromParameters pName, int32_t& val)
+{
+	uint16_t addr = pName * 8;
+	return Eeprom.ReadMem(addr, (uint8_t*)&val, sizeof(val));
+}
+
+int8_t Hal::ReadParameterFromEeprom16(EepromParameters pName, int16_t& val)
+{
+	uint16_t addr = pName * 8;
+	return Eeprom.ReadMem(addr, (uint8_t*)&val, sizeof(val));
+}
+
+int8_t Hal::ReadParameterFromEeprom8(EepromParameters pName, int8_t& val)
+{
+	uint16_t addr = pName * 8;
+	return Eeprom.ReadMem(addr, (uint8_t*)&val, sizeof(val));
+}
+
+int8_t Hal::WriteParameterToEeprom64(EepromParameters pName, const int64_t pValue)
+{
+	int64_t existVal = 0;
+	ReadParameterFromEeprom64(pName, existVal);
+	if (existVal == pValue)
+		return 0;
+	uint16_t addr = pName * 8;
+	return Eeprom.WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
+}
+
+int8_t Hal::WriteParameterToEeprom32(EepromParameters pName, const int32_t pValue)
+{
+	int32_t existVal = 0;
+	ReadParameterFromEeprom32(pName, existVal);
+	if (existVal == pValue)
+		return 0;
+	uint16_t addr = pName * 8;
+	return Eeprom.WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
+}
+
+int8_t Hal::WriteParameterToEeprom16(EepromParameters pName, const int16_t pValue)
+{
+	int16_t existVal = 0;
+	ReadParameterFromEeprom16(pName, existVal);
+	if (existVal == pValue)
+		return 0;
+	uint16_t addr = pName * 8;
+	return Eeprom.WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
+}
+
+int8_t Hal::WriteParameterToEeprom8(EepromParameters pName, const int8_t pValue)
+{
+	int8_t existVal = 0;
+	ReadParameterFromEeprom8(pName, existVal);
+	if (existVal == pValue)
+		return 0;
+	uint16_t addr = pName * 8;
+	return Eeprom.WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
+}
+
+int32_t Hal::GetTickCount()
+{
+	return _HalTicker;
+}
+
+int32_t Hal::GetTicksDiff(int32_t fromTicks, int32_t toTicks)
+{
+	if (fromTicks <= toTicks)
+		return toTicks - fromTicks;
+
+	return (0xffffffff - fromTicks + toTicks);
+}
+
+int32_t Hal::GetSpendTicks(int32_t fromTicks)
+{
+	int32_t nowT = GetTickCount();
+	if (nowT >= fromTicks)
+		return nowT - fromTicks;
+
+	return (0xffffffff - fromTicks + nowT);
+	//return embedded_get_spent_ms(fromTicks);
+}
+
+short Hal::GetTicksInSecond()
+{
+	return 10000;
+}
+
+short Hal::GetTicksInMilliSecond()
+{
+	return 10;
+}
