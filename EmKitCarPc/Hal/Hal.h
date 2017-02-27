@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include "Stm32UsartDma.h"
+#include "EepromM95160.h"
 
 class Hal {
 public:
@@ -30,7 +31,7 @@ public:
 
 	static Stm32UsartDma UsartWiFi;
 	static Stm32UsartDma UsartBms;
-
+	static EepromM95160 Eeprom;
 };
 
 #endif /* HAL_H_ */

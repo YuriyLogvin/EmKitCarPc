@@ -17,10 +17,12 @@ extern "C"
 UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart1;
+SPI_HandleTypeDef hspi2;
 }
 
 Stm32UsartDma Hal::UsartWiFi(&huart1, 0x200, 0x100);
 Stm32UsartDma Hal::UsartBms(&huart4, 0x200, 0x100);
+EepromM95160 Hal::Eeprom(&hspi2, SPI2_CS_MEM_GPIO_Port, SPI2_CS_MEM_Pin, SPI2_WP_GPIO_Port, SPI2_WP_Pin);
 
 void Hal::Init()
 {
