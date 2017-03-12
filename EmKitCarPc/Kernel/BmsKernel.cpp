@@ -24,11 +24,6 @@ void BmsKernelTick()
 	BmsKernel::Tick();
 }
 
-void BmsReceiveData(uint8_t data)
-{
-	BmsKernel::OnReceiveDataFromBms(data);
-}
-
 int16_t _BmsLevelMin = 0;
 int16_t _BmsLevelMax = 0;
 int16_t _BmsLevelBallancing = 0;
@@ -60,7 +55,7 @@ BmsActiveModes _BmsActiveMode = bamNone;
 
 void BmsKernel::Init()
 {
-	Hal::ReadParameterFromEeprom16(epBmsLevelMin, _BmsLevelMin);
+	/*Hal::ReadParameterFromEeprom16(epBmsLevelMin, _BmsLevelMin);
 	Hal::ReadParameterFromEeprom16(epBmsLevelMax, _BmsLevelMax);
 	Hal::ReadParameterFromEeprom16(epBmsLevelBalansing, _BmsLevelBallancing);
 	Hal::ReadParameterFromEeprom16(epBmsLevelCharged, _BmsLevelCharged);
@@ -73,14 +68,14 @@ void BmsKernel::Init()
 	Hal::ReadParameterFromEeprom8(epBmsOut1Type, (int8_t&)_Out1Type);
 	Hal::ReadParameterFromEeprom8(epBmsOut2Type, (int8_t&)_Out2Type);
 	Hal::ReadParameterFromEeprom8(epBmsPwm1Type, (int8_t&)_Pwm1Type);
-	Hal::ReadParameterFromEeprom8(epBmsPwm2Type, (int8_t&)_Pwm2Type);
+	Hal::ReadParameterFromEeprom8(epBmsPwm2Type, (int8_t&)_Pwm2Type);*/
 
 	_BmsProtocolHost = new ProtocolHost(1);
 	_BmsReceiveMetodHost = new ReceiveMetodHost();
 	_BmsSendMetodHost = new SendMetodHost();
 
 	int8_t cellCount = 0;
-	Hal::ReadParameterFromEeprom8(epBmsCellCount, cellCount);
+	//Hal::ReadParameterFromEeprom8(epBmsCellCount, cellCount);
 	_ResetCellCount(cellCount);
 
 }
@@ -94,6 +89,11 @@ void BmsKernel::Tick()
 	 * –ешение принимаетс€ относительно среднего значени€ напр€жени€ €чейки
 	 * */
 
+	uint8_t rbuf[64];
+	int16_t received = Hal::UsartBms->Receive(rbuf, sizeof(rbuf));
+	if (received > 0)
+		for (int16_t i = 0; i < received; i++)
+			OnReceiveDataFromBms(rbuf[i]);
 
 	if (Hal::GetSpendTicks(_BmsTicks) < Hal::GetTicksInSecond() * 1)
 		return;
@@ -147,7 +147,7 @@ void BmsKernel::_SendData()
 	};
 
 	if (buffPos)
-		Hal::UsartBms.Send(_SendDataBuff, buffPos);
+		Hal::UsartBms->Send(_SendDataBuff, buffPos);
 }
 
 void BmsKernel::_TurnOnBallansing(uint8_t cellNum)

@@ -30,9 +30,9 @@ public:
 
 	static bool IsOptoTurnedIn(uint8_t inpNum);
 
-	static Stm32UsartDma UsartWiFi;
-	static Stm32UsartDma UsartBms;
-	static EepromM95160 Eeprom;
+	static Stm32UsartDma* UsartWiFi;
+	static Stm32UsartDma* UsartBms;
+	static EepromM95160* Eeprom;
 
 	static int8_t ReadParameterFromEeprom64(EepromParameters pName, int64_t& val);
 	static int8_t ReadParameterFromEeprom32(EepromParameters pName, int32_t& val);

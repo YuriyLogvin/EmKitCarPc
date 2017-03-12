@@ -22,9 +22,6 @@ uint32_t HAL_GetTick(void);
 void HAL_IncTick(void);
 }
 
-Stm32UsartDma Hal::UsartWiFi(&huart1, 0x200, 0x100);
-Stm32UsartDma Hal::UsartBms(&huart4, 0x200, 0x100);
-EepromM95160 Hal::Eeprom(&hspi2, SPI2_CS_MEM_GPIO_Port, SPI2_CS_MEM_Pin, SPI2_WP_GPIO_Port, SPI2_WP_Pin);
 static uint32_t _HalTicker;
 
 static uint32_t _uwTick;
@@ -47,9 +44,17 @@ uint32_t HAL_GetTick(void)
 	return _uwTick;
 }
 
+Stm32UsartDma* Hal::UsartWiFi;
+Stm32UsartDma* Hal::UsartBms;
+EepromM95160* Hal::Eeprom;
+
 void Hal::Init()
 {
 	StmHalInit();
+
+	UsartWiFi = new Stm32UsartDma(&huart1, 0x200, 0x100);
+	UsartBms = new Stm32UsartDma(&huart4, 0x200, 0x100);
+	Eeprom = new EepromM95160(&hspi2, SPI2_CS_MEM_GPIO_Port, SPI2_CS_MEM_Pin, SPI2_WP_GPIO_Port, SPI2_WP_Pin);
 }
 
 void Hal::Tick()
@@ -146,25 +151,25 @@ bool Hal::IsOptoTurnedIn(uint8_t inpNum)
 int8_t Hal::ReadParameterFromEeprom64(EepromParameters pName, int64_t& val)
 {
 	uint16_t addr = pName * 8;
-	return Eeprom.ReadMem(addr, (uint8_t*)&val, sizeof(val));
+	return Eeprom->ReadMem(addr, (uint8_t*)&val, sizeof(val));
 }
 
 int8_t Hal::ReadParameterFromEeprom32(EepromParameters pName, int32_t& val)
 {
 	uint16_t addr = pName * 8;
-	return Eeprom.ReadMem(addr, (uint8_t*)&val, sizeof(val));
+	return Eeprom->ReadMem(addr, (uint8_t*)&val, sizeof(val));
 }
 
 int8_t Hal::ReadParameterFromEeprom16(EepromParameters pName, int16_t& val)
 {
 	uint16_t addr = pName * 8;
-	return Eeprom.ReadMem(addr, (uint8_t*)&val, sizeof(val));
+	return Eeprom->ReadMem(addr, (uint8_t*)&val, sizeof(val));
 }
 
 int8_t Hal::ReadParameterFromEeprom8(EepromParameters pName, int8_t& val)
 {
 	uint16_t addr = pName * 8;
-	return Eeprom.ReadMem(addr, (uint8_t*)&val, sizeof(val));
+	return Eeprom->ReadMem(addr, (uint8_t*)&val, sizeof(val));
 }
 
 int8_t Hal::WriteParameterToEeprom64(EepromParameters pName, const int64_t pValue)
@@ -174,7 +179,7 @@ int8_t Hal::WriteParameterToEeprom64(EepromParameters pName, const int64_t pValu
 	if (existVal == pValue)
 		return 0;
 	uint16_t addr = pName * 8;
-	return Eeprom.WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
+	return Eeprom->WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
 }
 
 int8_t Hal::WriteParameterToEeprom32(EepromParameters pName, const int32_t pValue)
@@ -184,7 +189,7 @@ int8_t Hal::WriteParameterToEeprom32(EepromParameters pName, const int32_t pValu
 	if (existVal == pValue)
 		return 0;
 	uint16_t addr = pName * 8;
-	return Eeprom.WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
+	return Eeprom->WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
 }
 
 int8_t Hal::WriteParameterToEeprom16(EepromParameters pName, const int16_t pValue)
@@ -194,7 +199,7 @@ int8_t Hal::WriteParameterToEeprom16(EepromParameters pName, const int16_t pValu
 	if (existVal == pValue)
 		return 0;
 	uint16_t addr = pName * 8;
-	return Eeprom.WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
+	return Eeprom->WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
 }
 
 int8_t Hal::WriteParameterToEeprom8(EepromParameters pName, const int8_t pValue)
@@ -204,7 +209,7 @@ int8_t Hal::WriteParameterToEeprom8(EepromParameters pName, const int8_t pValue)
 	if (existVal == pValue)
 		return 0;
 	uint16_t addr = pName * 8;
-	return Eeprom.WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
+	return Eeprom->WriteMem(addr, (uint8_t*)&pValue, sizeof(pValue));
 }
 
 int32_t Hal::GetTickCount()

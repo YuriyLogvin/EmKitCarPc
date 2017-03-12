@@ -48,12 +48,12 @@ uint16_t Stm32UsartDma::Receive(uint8_t* data, uint16_t dataBufSize)
 	uint8_t received = 0;
 	for (;1;)
 	{
-		if (_UsartRecvBuff[_UsartReceivePos*2] == 0xff)
+		if (_UsartRecvBuff[_UsartReceivePos*2+1] == 0xff)
 			break;
 
-		data[received++] = _UsartRecvBuff[_UsartReceivePos*2+1];
+		data[received++] = _UsartRecvBuff[_UsartReceivePos*2];
 
-		_UsartRecvBuff[_UsartReceivePos*2] = 0xff;
+		_UsartRecvBuff[_UsartReceivePos*2+1] = 0xff;
 
 		if (received >= dataBufSize)
 			break;

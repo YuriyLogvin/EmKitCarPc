@@ -19,8 +19,6 @@ void BmsKernelTick();
 //void PwKernelSetSendDataHandler(int (*sendDataHandler)(const uint8_t* buff, const uint16_t len));
 //void PwKernelOnReceiveData(const uint8_t* buff, const uint16_t len);
 
-void BmsReceiveData(uint8_t data);
-
 #ifdef __cplusplus
 }
 #endif
