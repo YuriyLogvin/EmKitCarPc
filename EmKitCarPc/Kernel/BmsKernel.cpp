@@ -95,6 +95,7 @@ void BmsKernel::Tick()
 		for (int16_t i = 0; i < received; i++)
 			OnReceiveDataFromBms(rbuf[i]);
 
+
 	if (Hal::GetSpendTicks(_BmsTicks) < Hal::GetTicksInSecond() * 1)
 		return;
 
@@ -143,7 +144,8 @@ void BmsKernel::_SendData()
 
 	while (_BmsProtocolHost->SendData(b))
 	{
-		_SendDataBuff[buffPos++] = b;
+		if (sizeof(_SendDataBuff) > buffPos + 2)
+			_SendDataBuff[buffPos++] = b;
 	};
 
 	if (buffPos)
@@ -318,9 +320,14 @@ void BmsKernel::_TryReceiveCellState()
 void BmsKernel::_ResetCellCount(uint8_t cellCount)
 {
 	if (_CellVoltages)
+	{
 		free(_CellVoltages);
+		_CellVoltages = 0;
+	}
+
 	_CellCount = cellCount;
-	_CellVoltages = (int16_t*)malloc(sizeof(int16_t) * _CellCount);
+	if (_CellCount)
+		_CellVoltages = (int16_t*)malloc(sizeof(int16_t) * _CellCount);
 }
 
 void BmsKernel::SetCellCount(uint8_t cellCount)
@@ -338,6 +345,8 @@ uint8_t BmsKernel::GetCellCount()
 
 int16_t BmsKernel::GetCellVoltage(int8_t cellNum)
 {
+	if (cellNum >= _CellCount)
+		return -1;
 	return _CellVoltages[cellNum];
 }
 

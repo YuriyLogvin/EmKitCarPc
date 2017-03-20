@@ -20,8 +20,8 @@ Stm32UsartDma::Stm32UsartDma(UART_HandleTypeDef* huart, uint16_t rcvBufSize, uin
 	memset(_UsartSendBuff, 0xff, _SendBufSize);
 
 	_UsartReceivePos = 0;
-	_UsartRecvBuff = (uint8_t*)malloc(_RcvBufSize);
-	memset(_UsartRecvBuff, 0xff, _RcvBufSize);
+	_UsartRecvBuff = (uint8_t*)malloc(_RcvBufSize*2);
+	memset(_UsartRecvBuff, 0xff, _RcvBufSize*2);
 	HAL_UART_Receive_DMA(_Huart, _UsartRecvBuff, _RcvBufSize);
 }
 

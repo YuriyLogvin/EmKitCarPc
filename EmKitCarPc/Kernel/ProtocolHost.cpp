@@ -105,7 +105,7 @@ unsigned char* ProtocolHost::ReceiveData( unsigned char data, unsigned char& dat
 					_CheckSum |= data;
 					_ReceiveState = None;
 					unsigned short i_CheckSum = CrcTool::Crc16(_DataBuffer, _DataBufferPosition);
-					//if (i_CheckSum == _CheckSum)
+					if (i_CheckSum == _CheckSum)
 					{
 						dataLength = _DataBufferPosition;
 						return _DataBuffer;
