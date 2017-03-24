@@ -50,7 +50,7 @@ public:
 	static short GetTicksInSecond();
 	static short GetTicksInMilliSecond();
 
-
+	static void SetPwm(uint8_t num, uint8_t pwm);
 
 };
 

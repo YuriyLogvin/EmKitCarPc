@@ -18,6 +18,7 @@ UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart1;
 SPI_HandleTypeDef hspi2;
+TIM_HandleTypeDef htim2;
 uint32_t HAL_GetTick(void);
 void HAL_IncTick(void);
 }
@@ -55,6 +56,10 @@ void Hal::Init()
 	UsartWiFi = new Stm32UsartDma(&huart1, 0x200, 0x100);
 	UsartBms = new Stm32UsartDma(&huart4, 0x200, 0x100);
 	Eeprom = new EepromM95160(&hspi2, SPI2_CS_MEM_GPIO_Port, SPI2_CS_MEM_Pin, SPI2_WP_GPIO_Port, SPI2_WP_Pin);
+
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+
 }
 
 void Hal::Tick()
@@ -244,3 +249,18 @@ short Hal::GetTicksInMilliSecond()
 {
 	return 10;
 }
+
+void Hal::SetPwm(uint8_t num, uint8_t pwm)
+{
+	switch (num)
+	{
+	case 1:
+		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, pwm << 2);
+		break;
+	case 2:
+		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, pwm << 2);
+		break;
+	}
+}
+
+
