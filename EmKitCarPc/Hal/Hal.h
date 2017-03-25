@@ -12,6 +12,7 @@
 #include "Stm32UsartDma.h"
 #include "EepromM95160.h"
 #include "EepromParameters.h"
+#include "Mcp3208.h"
 
 class Hal {
 public:
@@ -33,6 +34,8 @@ public:
 	static Stm32UsartDma* UsartWiFi;
 	static Stm32UsartDma* UsartBms;
 	static EepromM95160* Eeprom;
+	static Mcp3208* AdcConverter1;
+	static Mcp3208* AdcConverter2;
 
 	static int8_t ReadParameterFromEeprom64(EepromParameters pName, int64_t& val);
 	static int8_t ReadParameterFromEeprom32(EepromParameters pName, int32_t& val);
@@ -51,6 +54,13 @@ public:
 	static short GetTicksInMilliSecond();
 
 	static void SetPwm(uint8_t num, uint8_t pwm);
+
+	static int16_t GetInputVoltage(uint8_t num);
+
+	static int16_t GetTemperature(uint8_t num);
+
+private:
+	static void _UpdateDataFromExternalAdc();
 
 };
 

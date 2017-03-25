@@ -19,13 +19,19 @@ int main(void)
 	Hal::LedRed(true);
 
 	int32_t ticks = 0;
+	int32_t halTicks = 0;
 
 	uint8_t pwm1 = 1;
 	uint8_t pwm2 = 128;
 
 	while (true)
 	{
-		Hal::Tick();
+		if (Hal::GetSpendTicks(halTicks) > Hal::GetTicksInMilliSecond() * 2)
+		{
+			halTicks = Hal::GetTickCount();
+			Hal::Tick();
+		}
+
 		BmsKernel::Tick();
 
 		if (Hal::GetSpendTicks(ticks) > Hal::GetTicksInSecond() / 2)

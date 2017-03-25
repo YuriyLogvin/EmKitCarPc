@@ -27,6 +27,8 @@ EepromM95160::EepromM95160(SPI_HandleTypeDef* spiHandle, GPIO_TypeDef* csPort, u
 	_CsPin = csPin;
 	_WpPin = wpPin;
 
+	HAL_GPIO_WritePin(_CsPort, _CsPin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(_WpPort, _WpPin, GPIO_PIN_SET);
 }
 
 int8_t EepromM95160::ReadStatus(M95160Statuses& status)

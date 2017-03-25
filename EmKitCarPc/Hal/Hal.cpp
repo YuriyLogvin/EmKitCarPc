@@ -48,6 +48,9 @@ uint32_t HAL_GetTick(void)
 Stm32UsartDma* Hal::UsartWiFi;
 Stm32UsartDma* Hal::UsartBms;
 EepromM95160* Hal::Eeprom;
+Mcp3208* Hal::AdcConverter1;
+Mcp3208* Hal::AdcConverter2;
+
 
 void Hal::Init()
 {
@@ -56,6 +59,10 @@ void Hal::Init()
 	UsartWiFi = new Stm32UsartDma(&huart1, 0x200, 0x100);
 	UsartBms = new Stm32UsartDma(&huart4, 0x200, 0x100);
 	Eeprom = new EepromM95160(&hspi2, SPI2_CS_MEM_GPIO_Port, SPI2_CS_MEM_Pin, SPI2_WP_GPIO_Port, SPI2_WP_Pin);
+	AdcConverter1 = new Mcp3208(&hspi2, SPI2_CS_ADC1_GPIO_Port, SPI2_CS_ADC1_Pin, true);
+	AdcConverter2 = new Mcp3208(&hspi2, SPI2_CS_ADC2_GPIO_Port, SPI2_CS_ADC2_Pin, true);
+
+	HAL_GPIO_WritePin(SPI2_HOLD_GPIO_Port, SPI2_HOLD_Pin, GPIO_PIN_SET);
 
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
@@ -65,6 +72,10 @@ void Hal::Init()
 void Hal::Tick()
 {
 	StmHalTick();
+
+	int8_t i = 0;
+	ReadParameterFromEeprom8(epBmsCellCount, i);
+	//_UpdateDataFromExternalAdc();
 }
 
 bool Hal::LedRed()
@@ -263,4 +274,46 @@ void Hal::SetPwm(uint8_t num, uint8_t pwm)
 	}
 }
 
+uint16_t _AdcInputs[12];
+uint16_t _AdcTempSensors[4];
+
+void Hal::_UpdateDataFromExternalAdc()
+{
+	_AdcInputs[0] = AdcConverter1->GetAdc(7);
+	_AdcInputs[1] = AdcConverter1->GetAdc(6);
+	_AdcInputs[2] = AdcConverter1->GetAdc(5);
+	_AdcInputs[3] = AdcConverter1->GetAdc(4);
+	_AdcInputs[4] = AdcConverter1->GetAdc(3);
+	_AdcInputs[5] = AdcConverter1->GetAdc(2);
+	_AdcInputs[6] = AdcConverter2->GetAdc(7);
+	_AdcInputs[7] = AdcConverter2->GetAdc(6);
+	_AdcInputs[8] = AdcConverter2->GetAdc(5);
+	_AdcInputs[9] = AdcConverter2->GetAdc(4);
+	_AdcInputs[10] = AdcConverter2->GetAdc(3);
+	_AdcInputs[11] = AdcConverter2->GetAdc(2);
+
+
+	_AdcTempSensors[0] = AdcConverter1->GetAdc(1);
+	_AdcTempSensors[1] = AdcConverter1->GetAdc(0);
+	_AdcTempSensors[2] = AdcConverter2->GetAdc(1);
+	_AdcTempSensors[3] = AdcConverter2->GetAdc(0);
+
+
+}
+
+int16_t Hal::GetInputVoltage(uint8_t num)
+{
+	if (num > 7)
+		return -1;
+
+	return _AdcInputs[num];
+}
+
+int16_t GetTemperature(uint8_t num)
+{
+	if (num > 3)
+		return -1;
+
+	return _AdcTempSensors[num];
+}
 
