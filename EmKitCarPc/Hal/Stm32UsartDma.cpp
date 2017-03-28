@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 Stm32UsartDma::Stm32UsartDma(UART_HandleTypeDef* huart, uint16_t rcvBufSize, uint16_t sendBufSize)
 {
@@ -28,6 +29,20 @@ Stm32UsartDma::Stm32UsartDma(UART_HandleTypeDef* huart, uint16_t rcvBufSize, uin
 Stm32UsartDma::~Stm32UsartDma() {
 	free(_UsartSendBuff);
 	free(_UsartRecvBuff);
+}
+
+bool Stm32UsartDma::Send(const char* format, ...)
+{
+	if (_Huart->State & HAL_UART_STATE_BUSY_TX & 0xf0)
+		return false;
+
+	va_list args;
+	va_start(args, format);
+	vsnprintf((char*)_UsartSendBuff, _SendBufSize, format, args);
+	va_end(args);
+
+	HAL_UART_Transmit_DMA(_Huart, _UsartSendBuff, strlen((char*)_UsartSendBuff));
+
 }
 
 bool Stm32UsartDma::Send(uint8_t* data, uint16_t dataLen)

@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include "Stm32UsartDma.h"
+#include "Stm32Usart.h"
 #include "EepromM95160.h"
 #include "EepromParameters.h"
 #include "Mcp3208.h"
@@ -33,6 +34,7 @@ public:
 
 	static Stm32UsartDma* UsartWiFi;
 	static Stm32UsartDma* UsartBms;
+	static Stm32Usart* UsartRs485;
 	static EepromM95160* Eeprom;
 	static Mcp3208* AdcConverter1;
 	static Mcp3208* AdcConverter2;

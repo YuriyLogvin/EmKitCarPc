@@ -47,6 +47,8 @@ uint32_t HAL_GetTick(void)
 
 Stm32UsartDma* Hal::UsartWiFi;
 Stm32UsartDma* Hal::UsartBms;
+Stm32Usart* Hal::UsartRs485;
+
 EepromM95160* Hal::Eeprom;
 Mcp3208* Hal::AdcConverter1;
 Mcp3208* Hal::AdcConverter2;
@@ -58,6 +60,7 @@ void Hal::Init()
 
 	UsartWiFi = new Stm32UsartDma(&huart1, 0x200, 0x100);
 	UsartBms = new Stm32UsartDma(&huart4, 0x200, 0x100);
+	UsartRs485 = new Stm32Usart(&huart5, Rs485TxEn_GPIO_Port, Rs485TxEn_Pin);;
 	Eeprom = new EepromM95160(&hspi2, SPI2_CS_MEM_GPIO_Port, SPI2_CS_MEM_Pin, SPI2_WP_GPIO_Port, SPI2_WP_Pin);
 	AdcConverter1 = new Mcp3208(&hspi2, SPI2_CS_ADC1_GPIO_Port, SPI2_CS_ADC1_Pin, true);
 	AdcConverter2 = new Mcp3208(&hspi2, SPI2_CS_ADC2_GPIO_Port, SPI2_CS_ADC2_Pin, true);
@@ -73,9 +76,7 @@ void Hal::Tick()
 {
 	StmHalTick();
 
-	int8_t i = 0;
-	ReadParameterFromEeprom8(epBmsCellCount, i);
-	//_UpdateDataFromExternalAdc();
+	_UpdateDataFromExternalAdc();
 }
 
 bool Hal::LedRed()
@@ -303,17 +304,26 @@ void Hal::_UpdateDataFromExternalAdc()
 
 int16_t Hal::GetInputVoltage(uint8_t num)
 {
-	if (num > 7)
-		return -1;
+	int16_t res = 0;
 
-	return _AdcInputs[num];
+	if (num > 12)
+		return -1;
+	if (num < 1)
+		return -2;
+
+	res = _AdcInputs[num - 1];
+
+
+	return res;
 }
 
-int16_t GetTemperature(uint8_t num)
+int16_t Hal::GetTemperature(uint8_t num)
 {
-	if (num > 3)
+	if (num > 4)
 		return -1;
+	if (num < 1)
+		return -2;
 
-	return _AdcTempSensors[num];
+	return _AdcTempSensors[num - 1];
 }
 

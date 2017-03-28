@@ -24,6 +24,7 @@ public:
 	~Stm32UsartDma();
 
 	bool Send(uint8_t* data, uint16_t dataLen);
+	bool Send(const char* format, ...);
 	uint16_t Receive(uint8_t* data, uint16_t dataBufSize);
 };
 
