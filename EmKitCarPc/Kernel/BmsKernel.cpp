@@ -330,16 +330,16 @@ void BmsKernel::_ResetCellCount(uint8_t cellCount)
 		_CellVoltages = (int16_t*)malloc(sizeof(int16_t) * _CellCount);
 }
 
-void BmsKernel::SetCellCount(uint8_t cellCount)
+void BmsKernel::SetCellCount(uint16_t cellCount)
 {
-	Hal::WriteParameterToEeprom8(epBmsCellCount, cellCount);
+	Hal::WriteParameterToEeprom16(epBmsCellCount, cellCount);
 	_ResetCellCount(cellCount);
 }
 
-uint8_t BmsKernel::GetCellCount()
+uint16_t BmsKernel::GetCellCount()
 {
-	int8_t res = 0;
-	Hal::ReadParameterFromEeprom8(epBmsCellCount, res);
+	int16_t res = 0;
+	Hal::ReadParameterFromEeprom16(epBmsCellCount, res);
 	return res;
 }
 

@@ -67,6 +67,8 @@ void Hal::Init()
 
 	HAL_GPIO_WritePin(SPI2_HOLD_GPIO_Port, SPI2_HOLD_Pin, GPIO_PIN_SET);
 
+	HAL_GPIO_WritePin(SPI2_HOLD_GPIO_Port, SPI2_HOLD_Pin, GPIO_PIN_SET);
+
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 

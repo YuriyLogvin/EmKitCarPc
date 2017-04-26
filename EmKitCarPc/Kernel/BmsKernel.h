@@ -110,8 +110,8 @@ public:
 
 	static void OnReceiveDataFromBms(uint8_t data);
 
-	static void SetCellCount(uint8_t cellCount);
-	static uint8_t GetCellCount();
+	static void SetCellCount(uint16_t cellCount);
+	static uint16_t GetCellCount();
 
 	static void SetVoltageLevel(VoltageLevels level, int16_t value);
 	static int16_t GetVoltageLevel(VoltageLevels level);

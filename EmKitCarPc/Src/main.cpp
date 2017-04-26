@@ -9,14 +9,17 @@
 #include <stdio.h>
 #include <string.h>
 
-//void _SendViaWiFi(const char* val);
-void _SendViaWiFi(const char* format, ...);
-void _TurnNextOut();
+#include "Shell.h"
+
+void _ProcessInputData(uint8_t* data, uint16_t dataBufSize);
+void _ShellInit();
 
 int main(void)
 {
 	Hal::Init();
 	BmsKernel::Init();
+
+	Shell::Init();
 
 	Hal::LedBlue(true);
 	Hal::LedRed(true);
@@ -51,18 +54,13 @@ int main(void)
 			Hal::UsartRs485->Send("1234\n\r");
 
 			unsigned char rxData[100];
-			int16_t received = Hal::UsartRs485->Receive(rxData, sizeof(rxData));
+			int16_t received = Hal::UsartWiFi->Receive(rxData, sizeof(rxData));
 			if (received)
 			{
-				rxData[received] = 0;
-				Hal::UsartWiFi->Send("Received %s\n", rxData);
+				_ProcessInputData(rxData, received);
+				//Hal::UsartWiFi->Send("Received %s\n", rxData);
 			}
-			/*
-			HAL_StatusTypeDef s = HAL_UART_Receive(&huart5, rData, sizeof(rData), 10);
-			if (s != HAL_TIMEOUT)
-			{
-				Hal::UsartWiFi->Send("Received %s\n", rData);
-			}*/
+
 
 			//Temperature
 			/*Hal::UsartWiFi->Send(
@@ -120,44 +118,41 @@ int main(void)
 
 }
 
-int _ActiveOut = 0;
-void _TurnNextOut()
+
+char _CommandBuff[32];
+int8_t _CommandBuffPos = 0;
+void _ProcessInputData(uint8_t* data, uint16_t dataBufSize)
 {
-	switch (++_ActiveOut)
+	bool receivedCommand = false;
+	for (uint16_t i = 0; i < dataBufSize; i++)
 	{
-	case 1:
-		Hal::TurnOut(6, false);
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-		Hal::TurnOut(_ActiveOut - 1, false);
-		Hal::TurnOut(_ActiveOut, true);
-		break;
-	default:
-		_ActiveOut = 0;
-		break;
+		if (data[i] == '\r')
+			continue;
+
+		if (data[i] == '\n')
+		{
+			receivedCommand = true;
+			break;
+		}
+
+		if (_CommandBuffPos + 2 >= sizeof(_CommandBuff))
+		{
+			_CommandBuffPos = 0;
+			return;
+		}
+
+		_CommandBuff[_CommandBuffPos++] = data[i];
 	}
+
+	if (!receivedCommand)
+		return;
+
+	_CommandBuff[_CommandBuffPos] = 0;
+	_CommandBuffPos = 0;
+
+	Shell::ProcessCommand(_CommandBuff);
+
+
 }
-
-void _SendViaWiFi(const char* format, ...)
-{
-
-    //Hal::UsartWiFi->Send((uint8_t*)_SendWfBuff, strlen(_SendWfBuff));
-
-	/*char rBuf[64];
-	uint16_t received = Hal::UsartWiFi->Receive((uint8_t*)rBuf, sizeof(rBuf));
-	if (received)
-	{
-		char* sTextRvd = "Received: \n";
-		Hal::UsartWiFi->Send((uint8_t*)sTextRvd, strlen(sTextRvd));
-		Hal::UsartWiFi->Send((uint8_t*)rBuf, received);
-		char* sTextRN = "\n\r";
-		Hal::UsartWiFi->Send((uint8_t*)sTextRN, strlen(sTextRN));
-	}
-	*/
-}
-
 
 
