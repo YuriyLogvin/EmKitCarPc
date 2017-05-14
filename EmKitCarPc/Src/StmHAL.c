@@ -439,18 +439,18 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, Rs485TxEn_Pin|SPI2_HOLD_Pin|SPI2_CS_MEM_Pin|SPI2_CS_ADC2_Pin 
+  HAL_GPIO_WritePin(GPIOC, Rs485TxEn_Pin|BmsEnable_Pin|SPI2_HOLD_Pin|SPI2_CS_MEM_Pin|SPI2_CS_ADC2_Pin
                           |SPI2_CS_ADC1_Pin|LED_RED_Pin|LED_BLUE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_Out4_Pin|GPIO_Out3_Pin|GPIO_Out2_Pin|GPIO_Out1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_Out4_Pin|GPIO_Out3_Pin|GPIO_Out2_Pin|GPIO_Out1_Pin|VbusEnable_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, SPI2_WP_Pin|GPIO_Out5_Pin|GPIO_Out6_Pin|CanS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : Rs485TxEn_Pin SPI2_HOLD_Pin SPI2_CS_MEM_Pin SPI2_CS_ADC2_Pin 
                            SPI2_CS_ADC1_Pin LED_RED_Pin LED_BLUE_Pin */
-  GPIO_InitStruct.Pin = Rs485TxEn_Pin|SPI2_HOLD_Pin|SPI2_CS_MEM_Pin|SPI2_CS_ADC2_Pin 
+  GPIO_InitStruct.Pin = Rs485TxEn_Pin|BmsEnable_Pin|SPI2_HOLD_Pin|SPI2_CS_MEM_Pin|SPI2_CS_ADC2_Pin
                           |SPI2_CS_ADC1_Pin|LED_RED_Pin|LED_BLUE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -463,7 +463,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : GPIO_Out4_Pin GPIO_Out3_Pin GPIO_Out2_Pin GPIO_Out1_Pin */
-  GPIO_InitStruct.Pin = GPIO_Out4_Pin|GPIO_Out3_Pin|GPIO_Out2_Pin|GPIO_Out1_Pin;
+  GPIO_InitStruct.Pin = GPIO_Out4_Pin|GPIO_Out3_Pin|GPIO_Out2_Pin|GPIO_Out1_Pin|VbusEnable_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);

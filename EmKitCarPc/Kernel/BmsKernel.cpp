@@ -27,8 +27,9 @@ void BmsKernelTick()
 int16_t _BmsLevelMin = 0;
 int16_t _BmsLevelMax = 0;
 int16_t _BmsLevelBallancing = 0;
+int16_t _BmsLevelBallancingStart = 0;
 int16_t _BmsLevelCharged = 0;
-int16_t _BmsBallancingDelta = 100;
+int16_t _BmsBallancingDelta = 10;
 
 InputSources _Input1Source = isNone;
 InputSources _Input2Source = isNone;
@@ -49,18 +50,19 @@ uint8_t _CellCount = 0;
 uint8_t _BmsConnectState[8]; // 8 * 8 == 256 cells
 
 int16_t* _CellVoltages = 0;
-BmsActiveModes _BmsActiveMode = bamNone;
+BmsActiveModes _BmsActiveMode = bamCharging;
 
 
 
 void BmsKernel::Init()
 {
-	/*Hal::ReadParameterFromEeprom16(epBmsLevelMin, _BmsLevelMin);
+	Hal::ReadParameterFromEeprom16(epBmsLevelMin, _BmsLevelMin);
 	Hal::ReadParameterFromEeprom16(epBmsLevelMax, _BmsLevelMax);
-	Hal::ReadParameterFromEeprom16(epBmsLevelBalansing, _BmsLevelBallancing);
+	Hal::ReadParameterFromEeprom16(epBmsLevelBalancing, _BmsLevelBallancing);
+	Hal::ReadParameterFromEeprom16(epBmsLevelStartBalancing, _BmsLevelBallancingStart);
 	Hal::ReadParameterFromEeprom16(epBmsLevelCharged, _BmsLevelCharged);
 
-	Hal::ReadParameterFromEeprom8(epBmsInp1Source, (int8_t&)_Input1Source);
+	/*Hal::ReadParameterFromEeprom8(epBmsInp1Source, (int8_t&)_Input1Source);
 	Hal::ReadParameterFromEeprom8(epBmsInp2Source, (int8_t&)_Input2Source);
 	Hal::ReadParameterFromEeprom8(epBmsInp3Source, (int8_t&)_Input3Source);
 	Hal::ReadParameterFromEeprom8(epBmsInp4Source, (int8_t&)_Input4Source);
@@ -75,8 +77,10 @@ void BmsKernel::Init()
 	_BmsSendMetodHost = new SendMetodHost();
 
 	int8_t cellCount = 0;
-	//Hal::ReadParameterFromEeprom8(epBmsCellCount, cellCount);
+	Hal::ReadParameterFromEeprom8(epBmsCellCount, cellCount);
 	_ResetCellCount(cellCount);
+
+	Hal::ReadParameterFromEeprom16(epBmsBallancingDelta, _BmsBallancingDelta);
 
 }
 
@@ -111,7 +115,7 @@ void BmsKernel::Tick()
 
 	if (!okCellsConnection)
 	{
-		_BmsActiveMode = bamErrLostConnection;
+		//!_BmsActiveMode = bamErrLostConnection;
 	}
 
 	_SendRequestForExternalModules();
@@ -155,7 +159,7 @@ void BmsKernel::_SendData()
 void BmsKernel::_TurnOnBallansing(uint8_t cellNum)
 {
 	_BmsSendMetodHost->InitNewMetod((uint8_t)TurnBallancingChannel);
-	_BmsSendMetodHost->AddArgumentByte(cellNum);
+	_BmsSendMetodHost->AddArgumentByte(_CellCount - cellNum - 1);
 	_BmsSendMetodHost->AddArgumentBool(true);
 
 	_SendData();
@@ -227,7 +231,7 @@ BmsActiveModes BmsKernel::GetActiveMode()
 
 
 int32_t _AveragedCellsVoltage = 0;
-#define _AveragedCellsVoltageFactor 32
+int8_t _AveragedCellsVoltageFactor = 8;
 
 static ReceivedCellStateCallBack _ReceivedCellStateCallBack = 0;
 void BmsKernel::SetReceivedCellStateCallBack(ReceivedCellStateCallBack receivedCellState)
@@ -235,17 +239,31 @@ void BmsKernel::SetReceivedCellStateCallBack(ReceivedCellStateCallBack receivedC
 	_ReceivedCellStateCallBack = receivedCellState;
 }
 
+static bool _TransmitCellState = false;
+void BmsKernel::TransmitCellState(bool value)
+{
+	_TransmitCellState = value;
+}
+
+bool BmsKernel::TransmitCellState()
+{
+	return _TransmitCellState;
+}
 
 void BmsKernel::_OnReceivedCellState(CellInfo& cellInfo)
 {
-	_AveragedCellsVoltage += cellInfo.Voltage - _AveragedCellsVoltage / _AveragedCellsVoltageFactor;
+	if (_AveragedCellsVoltage == 0) //On starting system
+		_AveragedCellsVoltage = cellInfo.Voltage << _AveragedCellsVoltageFactor;
+
+	_AveragedCellsVoltage += cellInfo.Voltage - (_AveragedCellsVoltage >> _AveragedCellsVoltageFactor);
 
 	_BmsConnectState[cellInfo.Num / 8] |= (1 << (cellInfo.Num % 8));
 
 	switch (_GetActiveMode())
 	{
 	case bamCharging:
-		_DoBallancing(cellInfo.Num, cellInfo.Voltage);
+		if (_DoBallancing(cellInfo.Num, cellInfo.Voltage))
+			cellInfo.State = 11;
 		break;
 	case bamDischarging:
 		break;
@@ -258,14 +276,18 @@ void BmsKernel::_OnReceivedCellState(CellInfo& cellInfo)
 
 }
 
-void BmsKernel::_DoBallancing(uint8_t cellNum, int16_t cellVoltage)
+bool BmsKernel::_DoBallancing(uint8_t cellNum, int16_t cellVoltage)
 {
 	int16_t averagedCellsVoltage = _AveragedCellsVoltage >> _AveragedCellsVoltageFactor;
 
-	if (averagedCellsVoltage + _BmsBallancingDelta < cellVoltage)
-		return;
+	if (cellVoltage < averagedCellsVoltage + _BmsBallancingDelta)
+		return false;
+
+	if (cellVoltage < _BmsLevelBallancingStart)
+		return false;
 
 	_TurnOnBallansing(cellNum);
+	return true;
 }
 
 void BmsKernel::_TryReceiveCellState()
@@ -328,6 +350,10 @@ void BmsKernel::_ResetCellCount(uint8_t cellCount)
 	_CellCount = cellCount;
 	if (_CellCount)
 		_CellVoltages = (int16_t*)malloc(sizeof(int16_t) * _CellCount);
+
+	_AveragedCellsVoltageFactor = 2;
+	for (uint8_t cc = cellCount >> 1; cc != 0; cc >>= 1)
+		_AveragedCellsVoltageFactor++;
 }
 
 void BmsKernel::SetCellCount(uint16_t cellCount)
@@ -342,6 +368,20 @@ uint16_t BmsKernel::GetCellCount()
 	Hal::ReadParameterFromEeprom16(epBmsCellCount, res);
 	return res;
 }
+
+void BmsKernel::SetBallancingDelta(int16_t delta)
+{
+	Hal::WriteParameterToEeprom16(epBmsBallancingDelta, delta);
+	_BmsBallancingDelta = delta;
+}
+
+int16_t BmsKernel::GetBallancingDelta()
+{
+	int16_t res = 0;
+	Hal::ReadParameterFromEeprom16(epBmsBallancingDelta, res);
+	return res;
+}
+
 
 int16_t BmsKernel::GetCellVoltage(int8_t cellNum)
 {
@@ -362,8 +402,12 @@ void BmsKernel::SetVoltageLevel(VoltageLevels level, int16_t value)
 		Hal::WriteParameterToEeprom16(epBmsLevelMax, value);
 		_BmsLevelMax = value;
 		break;
-	case vlBalansing:
-		Hal::WriteParameterToEeprom16(epBmsLevelBalansing, value);
+	case vlStartBalancing:
+		Hal::WriteParameterToEeprom16(epBmsLevelStartBalancing, value);
+		_BmsLevelBallancingStart = value;
+		break;
+	case vlBalancing:
+		Hal::WriteParameterToEeprom16(epBmsLevelBalancing, value);
 		_BmsLevelBallancing = value;
 		break;
 	case vlCharged:

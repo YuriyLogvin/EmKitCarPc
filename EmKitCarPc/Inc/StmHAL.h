@@ -58,6 +58,8 @@
 #define SPEEDS1_GPIO_Port GPIOC
 #define SPEEDS2_Pin GPIO_PIN_1
 #define SPEEDS2_GPIO_Port GPIOC
+#define BmsEnable_Pin GPIO_PIN_2
+#define BmsEnable_GPIO_Port GPIOC
 #define ADC_VCC12_Pin GPIO_PIN_3
 #define ADC_VCC12_GPIO_Port GPIOA
 #define GPIO_Out4_Pin GPIO_PIN_4
@@ -86,6 +88,8 @@
 #define LED_RED_GPIO_Port GPIOC
 #define LED_BLUE_Pin GPIO_PIN_9
 #define LED_BLUE_GPIO_Port GPIOC
+#define VbusEnable_Pin GPIO_PIN_15
+#define VbusEnable_GPIO_Port GPIOA
 #define BmsTx_Pin GPIO_PIN_10
 #define BmsTx_GPIO_Port GPIOC
 #define BmsRx_Pin GPIO_PIN_11

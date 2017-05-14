@@ -15,6 +15,12 @@
 #include "EepromParameters.h"
 #include "Mcp3208.h"
 
+#define OutputsNumber 6
+#define PwmsNumber 2
+#define InpOptosNumber 2
+#define InputsNumber 12
+#define TempSensors 4
+
 class Hal {
 public:
 	static void Init();
@@ -24,6 +30,10 @@ public:
 	static void LedRed(bool);
 	static bool LedBlue();
 	static void LedBlue(bool);
+	static bool BmsEnabled();
+	static void BmsEnabled(bool);
+	static bool UsbEnabled();
+	static void UsbEnabled(bool);
 
 	static bool IsTurnedOut(uint8_t outNum);
 	static void TurnOut(uint8_t outNum, bool value);
@@ -56,6 +66,7 @@ public:
 	static short GetTicksInMilliSecond();
 
 	static void SetPwm(uint8_t num, uint8_t pwm);
+	static uint8_t GetPwm(uint8_t num);
 
 	static int16_t GetInputVoltage(uint8_t num);
 

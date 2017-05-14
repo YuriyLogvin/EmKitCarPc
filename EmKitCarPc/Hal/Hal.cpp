@@ -101,6 +101,27 @@ void Hal::LedBlue(bool value)
 	HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, value?GPIO_PIN_SET:GPIO_PIN_RESET);
 }
 
+bool Hal::BmsEnabled()
+{
+	return (HAL_GPIO_ReadPin(BmsEnable_GPIO_Port, BmsEnable_Pin) == GPIO_PIN_SET);
+}
+
+void Hal::BmsEnabled(bool value)
+{
+	HAL_GPIO_WritePin(BmsEnable_GPIO_Port, BmsEnable_Pin, value?GPIO_PIN_SET:GPIO_PIN_RESET);
+}
+
+bool Hal::UsbEnabled()
+{
+	return (HAL_GPIO_ReadPin(VbusEnable_GPIO_Port, VbusEnable_Pin) == GPIO_PIN_SET);
+}
+
+void Hal::UsbEnabled(bool value)
+{
+	HAL_GPIO_WritePin(VbusEnable_GPIO_Port, VbusEnable_Pin, value?GPIO_PIN_SET:GPIO_PIN_RESET);
+}
+
+
 bool Hal::IsTurnedOut(uint8_t outNum)
 {
 	switch (outNum)
@@ -275,6 +296,20 @@ void Hal::SetPwm(uint8_t num, uint8_t pwm)
 		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, pwm << 2);
 		break;
 	}
+}
+
+uint8_t Hal::GetPwm(uint8_t num)
+{
+	switch (num)
+	{
+	case 1:
+		return __HAL_TIM_GetCompare(&htim2, TIM_CHANNEL_2) >> 2;
+		break;
+	case 2:
+		return __HAL_TIM_GetCompare(&htim2, TIM_CHANNEL_1) >> 2;
+		break;
+	}
+	return 0;
 }
 
 uint16_t _AdcInputs[12];

@@ -70,13 +70,13 @@ uint16_t Stm32UsartDma::Receive(uint8_t* data, uint16_t dataBufSize)
 
 		_UsartRecvBuff[_UsartReceivePos*2+1] = 0xff;
 
+		_UsartReceivePos++;
+		if (_UsartReceivePos >= _RcvBufSize )
+			_UsartReceivePos = 0;
+
 		if (received >= dataBufSize)
 			break;
 
-		if (_UsartReceivePos + 1 >= _RcvBufSize/2 )
-			_UsartReceivePos = 0;
-		else
-			_UsartReceivePos++;
 	}
 
 	return received;

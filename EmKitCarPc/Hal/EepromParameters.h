@@ -44,7 +44,7 @@ typedef enum
 	epBmsCellCount = 50,
 	epBmsLevelMin = 51,
 	epBmsLevelMax = 52,
-	epBmsLevelBalansing = 53,
+	epBmsLevelBalancing = 53,
 	epBmsLevelCharged = 54,
 	epBmsLevelReserved1 = 55,
 	epBmsLevelReserved2 = 56,
@@ -64,9 +64,11 @@ typedef enum
 	epBmsPwm2StartPwm = 70,
 	epBmsPwm2HoldPwm = 71,
 	epBmsPwm2StartTime = 72,
+	epBmsBallancingDelta = 73,
+	epBmsLevelStartBalancing = 74,
 	//End BMS parameters
 
-	epEnd = 73,
+	epEnd = 75,
 
 	epLinkedKeysStorage = 100,
 } EepromParameters;

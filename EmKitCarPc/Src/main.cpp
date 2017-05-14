@@ -14,6 +14,8 @@
 void _ProcessInputData(uint8_t* data, uint16_t dataBufSize);
 void _ShellInit();
 
+void CellStateCallBack(CellInfo& cellInfo);
+
 int main(void)
 {
 	Hal::Init();
@@ -30,6 +32,12 @@ int main(void)
 	uint8_t pwm1 = 1;
 	uint8_t pwm2 = 128;
 
+	BmsKernel::SetReceivedCellStateCallBack(CellStateCallBack);
+
+	//BmsKernel::TransmitCellState(true);
+	Hal::BmsEnabled(true);
+	//BmsKernel::SetCellCount(6);
+
 	while (true)
 	{
 		if (Hal::GetSpendTicks(halTicks) > Hal::GetTicksInMilliSecond() * 2)
@@ -40,77 +48,17 @@ int main(void)
 
 		BmsKernel::Tick();
 
+
 		if (Hal::GetSpendTicks(ticks) > Hal::GetTicksInSecond())
 		{
 			ticks = Hal::GetTickCount();
-			//Hal::LedRed(!Hal::LedRed());
-			//_TurnNextOut();
-			Hal::SetPwm(1, pwm1++);
-			Hal::SetPwm(2, pwm2++);
-
-			Hal::LedBlue(Hal::IsOptoTurnedIn(1));
-			Hal::LedRed(Hal::IsOptoTurnedIn(2));
-
-			Hal::UsartRs485->Send("1234\n\r");
 
 			unsigned char rxData[100];
 			int16_t received = Hal::UsartWiFi->Receive(rxData, sizeof(rxData));
 			if (received)
 			{
 				_ProcessInputData(rxData, received);
-				//Hal::UsartWiFi->Send("Received %s\n", rxData);
 			}
-
-
-			//Temperature
-			/*Hal::UsartWiFi->Send(
-								"1 - %x;"
-								"2 - %x; "
-								"3 - %x; "
-								"4 - %x; "
-								"\n",
-								Hal::GetTemperature(1),
-								Hal::GetTemperature(2),
-								Hal::GetTemperature(3),
-								Hal::GetTemperature(4));
-								*/
-
-			//Voltages
-			/*Hal::UsartWiFi->Send(
-					"1 - %x;"
-					"2 - %x; "
-					"3 - %x; "
-					"4 - %x; "
-					"5 - %x; "
-					"6 - %x; "
-					"7 - %x; "
-					"8 - %x; "
-					"9 - %x; "
-					"10 - %x; "
-					"11 - %x; "
-					"12 - %x; "
-					"\n",
-					Hal::GetInputVoltage(1),
-					Hal::GetInputVoltage(2),
-					Hal::GetInputVoltage(3),
-					Hal::GetInputVoltage(4),
-					Hal::GetInputVoltage(5),
-					Hal::GetInputVoltage(6),
-					Hal::GetInputVoltage(7),
-					Hal::GetInputVoltage(8),
-					Hal::GetInputVoltage(9),
-					Hal::GetInputVoltage(10),
-					Hal::GetInputVoltage(11),
-					Hal::GetInputVoltage(12));
-					*/
-			//Hal::UsartWiFi->Send("%x\n", Hal::GetInputVoltage(3));
-			//int8_t ii = 0;
-			//Hal::ReadParameterFromEeprom8(epBmsCellCount, ii);
-			//Hal::UsartWiFi->Send("%x\n", ii);
-			//ii++;
-
-			//Hal::WriteParameterToEeprom8(epBmsCellCount, ii);
-
 		}
 
 
@@ -118,6 +66,21 @@ int main(void)
 
 }
 
+void _SendViaWiFi(const char* str)
+{
+	while (!Hal::UsartWiFi->Send((uint8_t*)str, strlen(str)));
+}
+
+void CellStateCallBack(CellInfo& cellInfo)
+{
+	if (!BmsKernel::TransmitCellState())
+		return;
+
+	char buff[64];
+	sprintf(buff, "\tCell %i: %i, %i, %i\r\n", cellInfo.Num, cellInfo.Voltage, cellInfo.Thermo, cellInfo.State);
+
+	_SendViaWiFi(buff);
+}
 
 char _CommandBuff[32];
 int8_t _CommandBuffPos = 0;

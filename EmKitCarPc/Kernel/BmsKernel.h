@@ -29,7 +29,8 @@ enum VoltageLevels
 {
 	vlMinVoltage,
 	vlMaxVoltage,
-	vlBalansing,
+	vlStartBalancing,
+	vlBalancing,
 	vlCharged
 };
 
@@ -91,7 +92,7 @@ typedef void (*ReceivedCellStateCallBack) (CellInfo& cellInfo);
 class BmsKernel
 {
 	static void _ResetCellCount(uint8_t cellCount);
-	static void _DoBallancing(uint8_t cellNum, int16_t cellVoltage);
+	static bool _DoBallancing(uint8_t cellNum, int16_t cellVoltage);
 	static void _TurnOnBallansing(uint8_t cellNum);
 	static void _SendRequestForExternalModules();
 	static void _SendCalibrateForExternalModules(uint8_t cellNum, int16_t cellVoltage);
@@ -107,6 +108,8 @@ public:
 	static BmsActiveModes GetActiveMode();
 
 	static void SetReceivedCellStateCallBack(ReceivedCellStateCallBack receivedCellState);
+	static void TransmitCellState(bool);
+	static bool TransmitCellState();
 
 	static void OnReceiveDataFromBms(uint8_t data);
 
@@ -128,6 +131,11 @@ public:
 
 	static bool IgnitionIsOn();
 	static bool ChargerIsOn();
+
+	static void SetBallancingDelta(int16_t delta);
+	static int16_t GetBallancingDelta();
+
+
 };
 
 #endif //#ifdef __cplusplus
